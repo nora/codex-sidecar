@@ -4,5 +4,5 @@ set -euo pipefail
 pnpm lint
 pnpm fmt:check
 pnpm typecheck
-pnpm test
+pnpm test:cov
 pnpm build

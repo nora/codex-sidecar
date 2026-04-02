@@ -29,7 +29,7 @@ pnpm qc
 - `pnpm lint`
 - `pnpm fmt:check`
 - `pnpm typecheck`
-- `pnpm test`
+- `pnpm test:cov`
 - `pnpm build`
 
 ## よく使うコマンド
@@ -39,6 +39,7 @@ pnpm install
 pnpm qc
 pnpm lint:fix
 pnpm fmt
+pnpm test:cov
 pnpm build
 pnpm dev -- help
 pnpm dev -- start
@@ -52,11 +53,15 @@ pnpm dev -- ask "この設計の弱点を挙げて"
 | ドキュメント | 内容 |
 |-------------|------|
 | [README.md](README.md) | リポジトリ概要 |
+| [docs/git.md](docs/git.md) | Git 規約 |
 | [tasks/base-plan.md](tasks/base-plan.md) | 基本設計と作業順序 |
+
+- `docs/` にドキュメントを追加・更新したら、この index も更新すること
 
 ## ツール運用
 
 - `npx` 禁止。`pnpm` 経由で実行すること
+- 一時ファイルは `tmp/` を使うこと
 
 ## Commit
 

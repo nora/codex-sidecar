@@ -17,12 +17,14 @@
     "fmt:check": "pnpm oxfmt --check src",
     "build": "tsc -p tsconfig.json",
     "test": "pnpm vitest run",
+    "test:cov": "pnpm vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "qc": "scripts/quality-check.sh",
     "dev": "tsx src/index.ts"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
+    "@vitest/coverage-v8": "^4.1.2",
     "oxfmt": "^0.42.0",
     "oxlint": "^1",
     "tsx": "^4.20.6",

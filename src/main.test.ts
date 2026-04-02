@@ -21,4 +21,14 @@ describe("codex-sidecar CLI", () => {
     expect(error).toHaveBeenCalledWith("Not implemented yet: start");
     expect(process.exitCode).toBe(1);
   });
+
+  it("引数なしでは usage を表示する", async () => {
+    const log = vi.spyOn(console, "log").mockImplementation(() => {});
+
+    process.exitCode = undefined;
+    await runCli([]);
+
+    expect(log).toHaveBeenCalledWith(getUsageText());
+    expect(process.exitCode).toBeUndefined();
+  });
 });
