@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Sidecar"
+  short_description: "Use a persistent Codex sidecar review thread."
+  default_prompt: "Use $codex-sidecar to ask Codex for a second opinion on this task."
