@@ -1,16 +1,33 @@
 {
   "name": "codex-sidecar",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.0",
+  "description": "Persistent Codex App Server sidecar CLI for Claude Code.",
+  "license": "MIT",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nora/codex-sidecar.git"
+  },
+  "homepage": "https://github.com/nora/codex-sidecar#readme",
+  "bugs": {
+    "url": "https://github.com/nora/codex-sidecar/issues"
+  },
   "engines": {
     "node": ">=22"
   },
   "packageManager": "pnpm@10.29.3",
+  "files": [
+    "dist",
+    "!dist/**/*.test.d.ts",
+    "!dist/**/*.test.js",
+    "README.md",
+    "LICENSE"
+  ],
   "bin": {
     "codex-sidecar": "dist/index.js"
   },
   "scripts": {
+    "prepack": "pnpm build",
     "lint": "pnpm oxlint src",
     "lint:fix": "pnpm oxlint --fix src",
     "fmt": "pnpm oxfmt --write src",
