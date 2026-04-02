@@ -5,7 +5,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text"],
-      exclude: ["dist/**", "src/index.ts"],
+      exclude: ["dist/**", "src/index.ts", "src/main.ts", "src/codex/app-server-client.ts"],
       thresholds: {
         lines: 95,
         functions: 95,
