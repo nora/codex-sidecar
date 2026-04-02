@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.claude/hooks/fix.sh)",
+      "Bash(pnpm *)"
+    ],
+    "deny": [
+      "Bash(npx *)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // empty' | xargs -I{} \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/fix.sh {}",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
+

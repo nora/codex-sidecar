@@ -1,0 +1,32 @@
+{
+  "name": "codex-sidecar",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.29.3",
+  "bin": {
+    "codex-sidecar": "dist/index.js"
+  },
+  "scripts": {
+    "lint": "pnpm oxlint src",
+    "lint:fix": "pnpm oxlint --fix src",
+    "fmt": "pnpm oxfmt --write src",
+    "fmt:check": "pnpm oxfmt --check src",
+    "build": "tsc -p tsconfig.json",
+    "test": "pnpm vitest run",
+    "typecheck": "tsc --noEmit",
+    "qc": "scripts/quality-check.sh",
+    "dev": "tsx src/index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "oxfmt": "^0.42.0",
+    "oxlint": "^1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.8.3",
+    "vitest": "^4.1.2"
+  }
+}
