@@ -2,6 +2,19 @@
 
 Claude Code から Codex App Server を薄い CLI 経由で呼び出し、同じ Codex thread を継続利用するための小さな sidecar。
 
+## Install
+
+```bash
+npm install -g codex-sidecar
+npx skills add https://github.com/nora/codex-sidecar
+```
+
+前提:
+
+- Node.js 22+
+- `codex` CLI が使えること
+- `codex app-server --listen stdio://` が動くこと
+
 ## Why
 
 - Claude Code を主担当にする
@@ -10,14 +23,28 @@ Claude Code から Codex App Server を薄い CLI 経由で呼び出し、同じ
 
 ## Current Scope
 
-- `codex app-server` をローカル子プロセスで起動する
-- 1 本の `thread` を state file で保持する
+- `codex app-server` を各 CLI 実行時にローカル子プロセスで起動する
+- 1 本の `thread` を state file で保持し、次回以降は resume する
 - CLI から `start / ask / reset / stop` を提供する
 - Claude Code 側は Bash または plugin からこの CLI を叩く
+- 既定モデルは `gpt-5.4`、既定 reasoning effort は `high`
 
-現時点では CLI 骨格、品質チェック、Claude hook まで入っていて、App Server client 自体はこれから実装する段階。
+`stdio://` は別プロセスから再接続できないため、現実装では常駐 app-server は持たず、各 command が app-server を起動して `threadId` / `threadPath` を再利用する。
+`start` は resume 可能な rollout を materialize するために bootstrap turn を 1 回だけ流す。
 
 ## Commands
+
+グローバルインストール後:
+
+```bash
+codex-sidecar start
+codex-sidecar ask "この設計の弱点を挙げて"
+codex-sidecar status
+codex-sidecar reset
+codex-sidecar stop
+```
+
+リポジトリ内での開発:
 
 ```bash
 pnpm install
@@ -25,7 +52,16 @@ pnpm qc
 pnpm dev -- help
 pnpm dev -- start
 pnpm dev -- ask "この設計の弱点を挙げて"
+pnpm dev -- status
+pnpm dev -- reset
+pnpm dev -- stop
 ```
+
+## Recovery
+
+- `codex-sidecar status` で現在の thread / state を確認する
+- `ask` が resume/state エラーなら `codex-sidecar reset`
+- state file を強制的に消したいなら `codex-sidecar stop`
 
 ## Quality
 
@@ -41,5 +77,7 @@ Claude Code の `PostToolUse` hook で、`src/*.ts` への編集後に `oxlint -
 
 ## Docs
 
-- [tasks/base-plan.md](/Users/nora/dev/codex-sidecar/tasks/base-plan.md): 現時点の基本設計と作業順序
-- [AGENTS.md](/Users/nora/dev/codex-sidecar/AGENTS.md): リポジトリ運用ルール
+- [tasks/base-plan.md](tasks/base-plan.md): 現時点の基本設計と作業順序
+- [docs/npm.md](docs/npm.md): npm 初回公開・更新・セキュリティ手順
+- [tasks/progress.md](tasks/progress.md): 軽量ロードマップと進捗チェックリスト
+- [AGENTS.md](AGENTS.md): リポジトリ運用ルール

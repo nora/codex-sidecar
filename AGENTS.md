@@ -54,7 +54,9 @@ pnpm dev -- ask "この設計の弱点を挙げて"
 |-------------|------|
 | [README.md](README.md) | リポジトリ概要 |
 | [docs/git.md](docs/git.md) | Git 規約 |
+| [docs/npm.md](docs/npm.md) | npm 初回公開・更新・セキュリティ手順 |
 | [tasks/base-plan.md](tasks/base-plan.md) | 基本設計と作業順序 |
+| [tasks/progress.md](tasks/progress.md) | 現在地と次のマイルストーン |
 
 - `docs/` にドキュメントを追加・更新したら、この index も更新すること
 

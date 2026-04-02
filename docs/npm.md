@@ -1,0 +1,115 @@
+# npm 公開手順
+
+## この package の配布構造
+
+`codex-sidecar` は 2 段で配布する。
+
+- CLI 本体: npm package として公開し、`npm install -g codex-sidecar` で入れる
+- Skill 定義: GitHub repo から入れ、`npx skills add https://github.com/nora/codex-sidecar` で使う
+
+## npm に公開される情報
+
+### package page に出るもの
+
+- `package.json` の `name`
+- `package.json` の `version`
+- `package.json` の `description`
+- `package.json` の `license`
+- `package.json` の `repository`
+- `package.json` の `homepage`
+- `package.json` の `bugs`
+- `README.md`
+
+### tarball に入るもの
+
+`package.json` の `files` で制御している。現時点では以下だけを入れる。
+
+- `dist/`
+- `README.md`
+- `LICENSE`
+- `package.json`
+
+確認コマンド:
+
+```bash
+pnpm pack --dry-run
+```
+
+`SKILL.md` と `agents/openai.yaml` は npm tarball には入れず、GitHub から配布する。
+
+## 初回公開
+
+前提:
+
+- npm アカウントを作る
+- npm アカウントの 2FA を有効にする
+- この repo を GitHub に push しておく
+- working tree に publish 対象外のゴミが混ざっていないことを確認する
+
+手順:
+
+```bash
+pnpm qc
+pnpm pack --dry-run
+npm login
+npm publish
+```
+
+公開後の確認:
+
+```bash
+npm view codex-sidecar name version description license repository.url
+npm install -g codex-sidecar
+codex-sidecar status
+npx skills add https://github.com/nora/codex-sidecar
+```
+
+npm package page は `https://www.npmjs.com/package/codex-sidecar` に出る。
+
+## 更新手順
+
+### CLI を更新する場合
+
+1. code / docs を更新する
+2. `package.json` の `version` を semver で上げる
+3. `tasks/progress.md` を必要なら更新する
+4. `pnpm qc`
+5. `pnpm pack --dry-run`
+6. commit する
+7. `git tag vX.Y.Z`
+8. `git push`
+9. `git push --tags`
+10. `npm publish`
+11. 別マシンで `npm install -g codex-sidecar` して確認する
+
+### Skill だけ更新する場合
+
+1. `SKILL.md` / `agents/openai.yaml` を更新する
+2. `uv run --with pyyaml python "${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py" .`
+3. commit する
+4. `git push`
+5. 別マシンで `npx skills add https://github.com/nora/codex-sidecar` を再実行して確認する
+
+CLI の npm 配布物を変えないなら、`npm publish` は不要。
+
+## セキュリティ
+
+### 必ずやる
+
+- npm アカウントで 2FA を有効化する
+- `.npmrc` や npm access token を repo に入れない
+- publish 前に `pnpm pack --dry-run` で tarball 内容を毎回確認する
+- package settings で可能なら `Require two-factor authentication and disallow tokens` を選ぶ
+
+### 避ける
+
+- bypass 2FA を有効にした npm token を常用しない
+- 機密ファイルを `files` に含めない
+- `tmp/`, `.agents/state/`, `dist/` の生成物をそのまま commit しない
+
+### 参考
+
+- npm publish: https://docs.npmjs.com/creating-and-publishing-unscoped-public-packages
+- 2FA policy: https://docs.npmjs.com/requiring-2fa-for-package-publishing-and-settings-modification
+- access tokens: https://docs.npmjs.com/about-access-tokens
+- semver: https://docs.npmjs.com/about-semantic-versioning
