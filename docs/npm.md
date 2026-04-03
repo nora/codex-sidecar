@@ -61,7 +61,7 @@ npm publish
 npm view codex-sidecar name version description license repository.url
 npm install -g codex-sidecar
 codex-sidecar status
-npx skills add https://github.com/nora/codex-sidecar
+npx skills add https://github.com/nora/codex-sidecar --yes --global
 ```
 
 npm package page は `https://www.npmjs.com/package/codex-sidecar` に出る。
@@ -76,11 +76,9 @@ npm package page は `https://www.npmjs.com/package/codex-sidecar` に出る。
 4. `pnpm qc`
 5. `pnpm pack --dry-run`
 6. commit する
-7. 必要なら `git tag vX.Y.Z`
-8. `git push`
-9. tag を作った場合は `git push --tags`
-10. GitHub Actions の `Publish` workflow を `workflow_dispatch` で実行する
-11. 別マシンで `npm install -g codex-sidecar` して確認する
+7. `git push`
+8. GitHub Actions の `Publish` workflow を `workflow_dispatch` で実行する
+9. 別マシンで `npm install -g codex-sidecar` して確認する
 
 ### Skill だけ更新する場合
 
@@ -88,7 +86,7 @@ npm package page は `https://www.npmjs.com/package/codex-sidecar` に出る。
 2. `uv run --with pyyaml python "${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py" .`
 3. commit する
 4. `git push`
-5. 別マシンで `npx skills add https://github.com/nora/codex-sidecar` を再実行して確認する
+5. 別マシンで `npx skills add https://github.com/nora/codex-sidecar --yes --global` を再実行して確認する
 
 CLI の npm 配布物を変えないなら、`npm publish` は不要。
 
@@ -105,8 +103,8 @@ CLI の npm 配布物を変えないなら、`npm publish` は不要。
 - Workflow filename: `publish.yml`
 - Environment name: 空でよい
 
-設定後、GitHub Actions の `Publish` workflow を手動実行すると、`package.json` の version が npm に publish される。
-同じ version は再 publish できないので、更新時は必ず version を上げる。
+設定後、GitHub Actions の `Publish` workflow を手動実行すると、`package.json` の version が npm に publish され、成功後に `vX.Y.Z` tag が push される。
+同じ version は再 publish できない。同名 Git tag も既にあると失敗する。更新時は必ず version を上げる。
 
 public repo + public package + Trusted Publishing の条件を満たすと、npm provenance が自動生成される。
 
