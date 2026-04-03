@@ -109,7 +109,7 @@ CLI の npm 配布物を変えないなら、`npm publish` は不要。
 tag 処理は以下の script に分けている。
 
 - `scripts/resolve-release-tag.sh`: `package.json` の version から `vX.Y.Z` を作り、同名 tag が既にあれば失敗する
-- `scripts/push-release-tag.sh`: `github-actions[bot]` 名義を設定し、publish 対象 commit に tag を打って `origin` へ push する
+- `scripts/push-release-tag.sh`: publish 対象 commit に軽量 tag を打ち、その tag を `origin` へ push する
 
 public repo + public package + Trusted Publishing の条件を満たすと、npm provenance が自動生成される。
 

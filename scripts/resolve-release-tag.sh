@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# package.json の version から `vX.Y.Z` tag 名を作り、同名 tag が既にあれば失敗する。
 set -euo pipefail
 
 package_json_path="${1:-package.json}"
