@@ -1,8 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(.claude/hooks/fix.sh)",
-      "Bash(pnpm *)"
+      "Bash(.claude/hooks/fix.sh)"
     ],
     "deny": [
       "Bash(npx *)"
@@ -23,4 +22,3 @@
     ]
   }
 }
-
