@@ -43,6 +43,7 @@
 - `codex app-server` protocol shape は確認済み
 - `stdio://` は別プロセスから既存 app-server に再接続できない
 - そのため現実装は各 command ごとに app-server を起動し、`threadId` + `threadPath` で resume する
+- state file が `.agents/state/codex-sidecar.json` 固定なので、現状は `1 cwd = 1 sidecar session`
 - `start` / `reset` では rollout を materialize するため bootstrap turn を 1 回流す
 - 現時点の構成は `Claude Code -> Bash / skill -> codex-sidecar CLI -> codex app-server --listen stdio:// -> persisted thread`
 
@@ -52,6 +53,7 @@
 
 ### Phase D: 配布品質を上げる
 
+- [ ] 同一 cwd で複数 thread を使い分ける named session を追加する
 - [ ] 設定ファイルか CLI option で model / effort を上書きできるようにする
 - [ ] `status --json` のような機械可読出力を検討する
 - [ ] エラー分類をもう少し体系化する
