@@ -77,7 +77,6 @@ Claude Code の `PostToolUse` hook で、`src/*.ts` への編集後に `oxlint -
 
 ## Docs
 
-- [tasks/base-plan.md](tasks/base-plan.md): 現時点の基本設計と作業順序
 - [docs/npm.md](docs/npm.md): npm 初回公開・更新・セキュリティ手順
 - [tasks/progress.md](tasks/progress.md): 軽量ロードマップと進捗チェックリスト
 - [AGENTS.md](AGENTS.md): リポジトリ運用ルール
