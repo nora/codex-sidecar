@@ -1,14 +1,14 @@
-name: CI
+name: Publish
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
-  qc:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,6 +23,7 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: "22.14.0"
+          registry-url: "https://registry.npmjs.org"
           cache: pnpm
 
       - name: Install dependencies
@@ -30,3 +31,6 @@ jobs:
 
       - name: Run quality check
         run: pnpm qc
+
+      - name: Publish to npm
+        run: npm publish

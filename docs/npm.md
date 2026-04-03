@@ -79,7 +79,7 @@ npm package page は `https://www.npmjs.com/package/codex-sidecar` に出る。
 7. 必要なら `git tag vX.Y.Z`
 8. `git push`
 9. tag を作った場合は `git push --tags`
-10. `npm publish`
+10. GitHub Actions の `Publish` workflow を `workflow_dispatch` で実行する
 11. 別マシンで `npm install -g codex-sidecar` して確認する
 
 ### Skill だけ更新する場合
@@ -92,6 +92,24 @@ npm package page は `https://www.npmjs.com/package/codex-sidecar` に出る。
 
 CLI の npm 配布物を変えないなら、`npm publish` は不要。
 
+## CI publish
+
+`.github/workflows/publish.yml` は npm Trusted Publishing + OIDC 前提で `npm publish` を実行する。
+長期 npm token は使わない。
+
+初回だけ npmjs.com の package settings で Trusted Publisher を登録する。
+
+- Publisher: GitHub Actions
+- Organization/user: `nora`
+- Repository: `codex-sidecar`
+- Workflow filename: `publish.yml`
+- Environment name: 空でよい
+
+設定後、GitHub Actions の `Publish` workflow を手動実行すると、`package.json` の version が npm に publish される。
+同じ version は再 publish できないので、更新時は必ず version を上げる。
+
+public repo + public package + Trusted Publishing の条件を満たすと、npm provenance が自動生成される。
+
 ## セキュリティ
 
 ### 必ずやる
@@ -100,6 +118,7 @@ CLI の npm 配布物を変えないなら、`npm publish` は不要。
 - `.npmrc` や npm access token を repo に入れない
 - publish 前に `pnpm pack --dry-run` で tarball 内容を毎回確認する
 - package settings で可能なら `Require two-factor authentication and disallow tokens` を選ぶ
+- GitHub Actions の `uses:` は tag ではなく commit SHA pin にする
 
 ### 避ける
 
@@ -110,6 +129,7 @@ CLI の npm 配布物を変えないなら、`npm publish` は不要。
 ### 参考
 
 - npm publish: https://docs.npmjs.com/creating-and-publishing-unscoped-public-packages
+- Trusted Publishing: https://docs.npmjs.com/trusted-publishers/
 - 2FA policy: https://docs.npmjs.com/requiring-2fa-for-package-publishing-and-settings-modification
 - access tokens: https://docs.npmjs.com/about-access-tokens
 - semver: https://docs.npmjs.com/about-semantic-versioning
