@@ -21,10 +21,10 @@ npm install -g codex-sidecar
 codex-sidecar status
 ```
 
-Skill だけ更新するなら npm publish は不要。`SKILL.md` / `agents/openai.yaml` を更新して push し、別マシンで入れ直す。
+Skill だけ更新するなら npm publish は不要。`skills/codex-sidecar/SKILL.md` / `skills/codex-sidecar/agents/openai.yaml` を更新して push し、別マシンで入れ直す。
 
 ```bash
-npx skills add https://github.com/nora/codex-sidecar --yes --global
+npx skills add https://github.com/nora/codex-sidecar/tree/main/skills/codex-sidecar --yes --global
 ```
 
 ## 自動更新の仕組み

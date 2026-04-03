@@ -6,7 +6,7 @@ Claude Code から Codex App Server を薄い CLI 経由で呼び出し、同じ
 
 ```bash
 npm install -g codex-sidecar
-npx skills add https://github.com/nora/codex-sidecar --yes --global
+npx skills add https://github.com/nora/codex-sidecar/tree/main/skills/codex-sidecar --yes --global
 ```
 
 前提:
@@ -81,6 +81,6 @@ Claude Code の `PostToolUse` hook で、`src/*.ts` への編集後に `oxlint -
 
 ## Docs
 
-- [docs/npm.md](docs/npm.md): npm 初回公開・更新・セキュリティ手順
+- [docs/npm.md](docs/npm.md): npm 更新手順と Publish workflow
 - [tasks/progress.md](tasks/progress.md): 軽量ロードマップと進捗チェックリスト
 - [AGENTS.md](AGENTS.md): リポジトリ運用ルール
