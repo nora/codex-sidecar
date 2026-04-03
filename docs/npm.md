@@ -77,7 +77,7 @@ npm package page は `https://www.npmjs.com/package/codex-sidecar` に出る。
 5. `pnpm pack --dry-run`
 6. commit する
 7. `git push`
-8. GitHub Actions の `Publish` workflow を `workflow_dispatch` で実行する
+8. `pnpm publish:workflow`
 9. 別マシンで `npm install -g codex-sidecar` して確認する
 
 ### Skill だけ更新する場合

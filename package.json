@@ -37,7 +37,8 @@
     "test:cov": "pnpm vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "qc": "scripts/quality-check.sh",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "publish:workflow": "gh workflow run Publish --ref main"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
