@@ -76,9 +76,9 @@ npm package page は `https://www.npmjs.com/package/codex-sidecar` に出る。
 4. `pnpm qc`
 5. `pnpm pack --dry-run`
 6. commit する
-7. `git tag vX.Y.Z`
+7. 必要なら `git tag vX.Y.Z`
 8. `git push`
-9. `git push --tags`
+9. tag を作った場合は `git push --tags`
 10. `npm publish`
 11. 別マシンで `npm install -g codex-sidecar` して確認する
 
