@@ -106,6 +106,11 @@ CLI の npm 配布物を変えないなら、`npm publish` は不要。
 設定後、GitHub Actions の `Publish` workflow を手動実行すると、`package.json` の version が npm に publish され、成功後に `vX.Y.Z` tag が push される。
 同じ version は再 publish できない。同名 Git tag も既にあると失敗する。更新時は必ず version を上げる。
 
+tag 処理は以下の script に分けている。
+
+- `scripts/resolve-release-tag.sh`: `package.json` の version から `vX.Y.Z` を作り、同名 tag が既にあれば失敗する
+- `scripts/push-release-tag.sh`: `github-actions[bot]` 名義を設定し、publish 対象 commit に tag を打って `origin` へ push する
+
 public repo + public package + Trusted Publishing の条件を満たすと、npm provenance が自動生成される。
 
 ## セキュリティ

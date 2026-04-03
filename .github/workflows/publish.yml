@@ -37,22 +37,11 @@ jobs:
       - name: Resolve release tag
         id: release
         run: |
-          version="$(node -p "JSON.parse(require('fs').readFileSync('package.json', 'utf8')).version")"
-          tag="v${version}"
-
-          if git rev-parse "refs/tags/${tag}" >/dev/null 2>&1; then
-            echo "::error::Git tag ${tag} already exists"
-            exit 1
-          fi
-
+          tag="$(scripts/resolve-release-tag.sh)"
           echo "tag=${tag}" >> "$GITHUB_OUTPUT"
 
       - name: Publish to npm
         run: npm publish
 
       - name: Push git tag
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag "${{ steps.release.outputs.tag }}" "${GITHUB_SHA}"
-          git push origin "${{ steps.release.outputs.tag }}"
+        run: scripts/push-release-tag.sh "${{ steps.release.outputs.tag }}" "${GITHUB_SHA}"
