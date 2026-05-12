@@ -14,7 +14,7 @@ describe("codex-sidecar CLI", () => {
   it("usage 文字列に主要コマンドが含まれる", () => {
     const usage = getUsageText();
 
-    expect(usage).toContain("codex-sidecar <command>");
+    expect(usage).toContain("codex-sidecar [--model <model>]");
     expect(usage).toContain("start");
     expect(usage).toContain("ask <message>");
     expect(usage).toContain("status");
@@ -60,6 +60,61 @@ describe("codex-sidecar CLI", () => {
       updatedAt: "2026-04-02T01:00:00.000Z",
     });
     expect(client.closeCalls).toBe(1);
+  });
+
+  it("CLI option で model と reasoning effort を指定できる", async () => {
+    const client = new FakeCodexClient({
+      createThread: {
+        id: "thr_start",
+        path: "/tmp/thr_start.jsonl",
+        cwd: "/repo",
+      },
+    });
+    const stateFilePath = await createStateFilePath();
+    const createClient = vi.fn(async () => client);
+
+    await runCli(["--model", "gpt-5.5", "--effort", "xhigh", "start"], {
+      context: {
+        cwd: "/repo",
+        stateFilePath,
+        stdout: vi.fn(),
+        stderr: vi.fn(),
+        createClient,
+      },
+    });
+
+    expect(createClient).toHaveBeenCalledWith("/repo", {
+      model: "gpt-5.5",
+      reasoningEffort: "xhigh",
+    });
+  });
+
+  it("--model latest は Codex CLI の既定 model に委譲する", async () => {
+    const stdout = vi.fn();
+    const stateFilePath = await createStateFilePath();
+
+    await runCli(["--model", "latest", "status"], {
+      context: {
+        cwd: "/repo",
+        stateFilePath,
+        codexOptions: {
+          model: "gpt-5.4",
+          reasoningEffort: "medium",
+        },
+        stdout,
+        stderr: vi.fn(),
+        createClient: async () => new FakeCodexClient(),
+      },
+    });
+
+    expect(stdout).toHaveBeenCalledWith(
+      [
+        "Sidecar session: stopped",
+        `State file: ${stateFilePath}`,
+        "Model: Codex CLI default (latest)",
+        "Reasoning effort: medium",
+      ].join("\n"),
+    );
   });
 
   it("ask が同じ thread を再利用して最終メッセージを返す", async () => {
@@ -702,8 +757,8 @@ describe("codex-sidecar CLI", () => {
         "Started at: 2026-04-02T01:00:00.000Z",
         "Updated at: 2026-04-02T01:05:00.000Z",
         `State file: ${stateFilePath}`,
-        "Default model: gpt-5.4",
-        "Default reasoning effort: high",
+        "Model: Codex CLI default (latest)",
+        "Reasoning effort: high",
       ].join("\n"),
     );
   });
@@ -750,8 +805,8 @@ describe("codex-sidecar CLI", () => {
       [
         "Sidecar session: stopped",
         `State file: ${stateFilePath}`,
-        "Default model: gpt-5.4",
-        "Default reasoning effort: high",
+        "Model: Codex CLI default (latest)",
+        "Reasoning effort: high",
       ].join("\n"),
     );
   });
@@ -785,8 +840,8 @@ describe("codex-sidecar CLI", () => {
         `State file: ${stateFilePath}`,
         `Invalid sidecar state file: ${stateFilePath}: unsupported version`,
         "Run `codex-sidecar reset` to recreate the sidecar thread, or `codex-sidecar stop` to clear local state.",
-        "Default model: gpt-5.4",
-        "Default reasoning effort: high",
+        "Model: Codex CLI default (latest)",
+        "Reasoning effort: high",
       ].join("\n"),
     );
     expect(process.exitCode).toBeUndefined();

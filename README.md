@@ -39,19 +39,22 @@ codex-sidecar status
 codex-sidecar reset
 codex-sidecar ask "Start fresh under this new assumption: ..."
 codex-sidecar stop
+codex-sidecar --model gpt-5.5 --effort xhigh ask "Review this with a stronger model."
 ```
 
 - `start`: create and save a new Codex thread
 - `ask <message>`: send a message to the active thread and print Codex's reply
-- `status`: show the saved thread state and default model settings
+- `status`: show the saved thread state and effective model settings
 - `reset`: archive the current thread and switch to a new one
 - `stop`: archive the current thread and delete local state
+- `--model <model>`: pass a specific model to Codex. Use `latest` or omit the option to use the Codex CLI default.
+- `--effort <effort>`: pass a reasoning effort for turns. Default: `high`
 
 ## Session model
 
 - State file: `.agents/state/codex-sidecar.json` under each project directory
 - Current limit: 1 directory = 1 sidecar session
-- Default model: `gpt-5.4`
+- Default model: Codex CLI default, so it follows the latest model selected by the installed Codex CLI
 - Default reasoning effort: `high`
 - No daemon: each command launches `codex app-server`, resumes the saved thread, runs one operation, and exits
 

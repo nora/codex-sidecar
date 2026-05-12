@@ -30,7 +30,6 @@ describe("app-server client", () => {
       },
       "thread/start"(request, control) {
         expect(request.params).toMatchObject({
-          model: "gpt-5.4",
           cwd: "/repo",
           approvalPolicy: "never",
           sandbox: "workspace-write",
@@ -38,6 +37,7 @@ describe("app-server client", () => {
           experimentalRawEvents: false,
           persistExtendedHistory: true,
         });
+        expect(request.params).not.toHaveProperty("model");
         control.respond(request.id, {
           thread: {
             id: "thr_1",
@@ -82,8 +82,8 @@ describe("app-server client", () => {
         expect(request.params).toMatchObject({
           threadId: "thr_1",
           path: "/tmp/thr_1.jsonl",
-          model: "gpt-5.4",
         });
+        expect(request.params).not.toHaveProperty("model");
         control.respond(request.id, {
           thread: {
             id: "thr_1",
@@ -151,6 +151,60 @@ describe("app-server client", () => {
       errorMessage: null,
     });
 
+    await client.close();
+  });
+
+  it("指定された model と reasoning effort を request に渡す", async () => {
+    const server = createFakeServer({
+      initialize(request, control) {
+        control.respond(request.id, {
+          userAgent: "ua",
+          codexHome: "/tmp/.codex",
+          platformFamily: "unix",
+          platformOs: "macos",
+        });
+      },
+      "thread/start"(request, control) {
+        expect(request.params).toMatchObject({
+          model: "gpt-5.5",
+        });
+        control.respond(request.id, {
+          thread: {
+            id: "thr_1",
+            path: "/tmp/thr_1.jsonl",
+            cwd: "/repo",
+          },
+        });
+      },
+      "turn/start"(request, control) {
+        expect(request.params).toMatchObject({
+          effort: "xhigh",
+        });
+        control.respond(request.id, {
+          turn: {
+            id: "turn_1",
+          },
+        });
+        control.notify("turn/completed", {
+          threadId: "thr_1",
+          turn: {
+            id: "turn_1",
+            status: "completed",
+            error: null,
+          },
+        });
+      },
+    });
+    spawnMock.mockReturnValue(server);
+
+    const { createAppServerClient } = await import("./app-server-client.js");
+    const client = await createAppServerClient("/repo", {
+      model: "gpt-5.5",
+      reasoningEffort: "xhigh",
+    });
+
+    await client.createThread();
+    await client.startTurn("thr_1", "hello");
     await client.close();
   });
 

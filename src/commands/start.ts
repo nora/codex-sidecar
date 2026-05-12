@@ -8,7 +8,7 @@ export async function runStartCommand(context: CommandContext): Promise<void> {
     throw new Error(`Sidecar session is already active: ${existingState.threadId}`);
   }
 
-  const client = await context.createClient(context.cwd);
+  const client = await context.createClient(context.cwd, context.codexOptions);
 
   try {
     const thread = await client.createThread();

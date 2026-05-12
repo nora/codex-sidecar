@@ -1,6 +1,6 @@
 {
   "name": "codex-sidecar",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Persistent Codex App Server sidecar CLI for Claude Code.",
   "keywords": [
     "codex",

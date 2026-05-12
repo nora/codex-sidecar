@@ -39,19 +39,22 @@ codex-sidecar status
 codex-sidecar reset
 codex-sidecar ask "Start fresh under this new assumption: ..."
 codex-sidecar stop
+codex-sidecar --model gpt-5.5 --effort xhigh ask "Review this with a stronger model."
 ```
 
 - `start`: 新しい Codex thread を作って保存する
 - `ask <message>`: active thread にメッセージを送り、Codex の返答を表示する
-- `status`: 保存中の thread state と既定 model 設定を表示する
+- `status`: 保存中の thread state と有効な model 設定を表示する
 - `reset`: 現在の thread を archive して新しい thread に切り替える
 - `stop`: 現在の thread を archive して local state を消す
+- `--model <model>`: Codex に渡す model を指定する。`latest` または省略時は Codex CLI の既定値に委譲する
+- `--effort <effort>`: turn ごとの reasoning effort を指定する。既定値は `high`
 
 ## セッションの持ち方
 
 - state file は各 project directory の `.agents/state/codex-sidecar.json`
 - 現状は `1 directory = 1 sidecar session`
-- 既定 model は `gpt-5.4`
+- 既定 model は Codex CLI の既定値に委譲するため、installed Codex CLI が選ぶ最新 model に追従する
 - 既定 reasoning effort は `high`
 - daemon は持たず、各コマンドごとに `codex app-server` を起動し、保存済み thread を resume して 1 操作だけ実行して終了する
 

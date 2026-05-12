@@ -12,7 +12,7 @@ export async function runAskCommand(context: CommandContext, message: string): P
     throw new Error("Sidecar session is not started. Run `codex-sidecar start`.");
   }
 
-  const client = await context.createClient(context.cwd);
+  const client = await context.createClient(context.cwd, context.codexOptions);
 
   try {
     const thread = await resumeThreadWithRecoveryHint(client, state.threadId, state.threadPath);

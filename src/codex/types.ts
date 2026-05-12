@@ -20,6 +20,11 @@ export interface CodexTurnResult {
   errorMessage: string | null;
 }
 
+export interface CodexClientOptions {
+  model?: string;
+  reasoningEffort: string;
+}
+
 export interface CodexClient {
   createThread(): Promise<CodexThread>;
   resumeThread(threadId: string, threadPath?: string | null): Promise<CodexThread>;
@@ -32,7 +37,8 @@ export interface CommandContext {
   cwd: string;
   now: () => Date;
   stateFilePath: string;
+  codexOptions: CodexClientOptions;
   stdout: (message: string) => void;
   stderr: (message: string) => void;
-  createClient: (cwd: string) => Promise<CodexClient>;
+  createClient: (cwd: string, options: CodexClientOptions) => Promise<CodexClient>;
 }

@@ -1,6 +1,6 @@
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
-import { DEFAULT_MODEL, DEFAULT_REASONING_EFFORT } from "./defaults.js";
-import type { CodexClient, CodexThread, CodexTurnResult } from "./types.js";
+import { DEFAULT_REASONING_EFFORT } from "./defaults.js";
+import type { CodexClient, CodexClientOptions, CodexThread, CodexTurnResult } from "./types.js";
 
 const CLIENT_VERSION = "0.0.0";
 const TURN_TIMEOUT_MS = 5 * 60 * 1000;
@@ -44,8 +44,11 @@ interface TurnStartResponse {
   };
 }
 
-export async function createAppServerClient(cwd: string): Promise<CodexClient> {
-  const client = new AppServerClient(cwd);
+export async function createAppServerClient(
+  cwd: string,
+  options: CodexClientOptions = { reasoningEffort: DEFAULT_REASONING_EFFORT },
+): Promise<CodexClient> {
+  const client = new AppServerClient(cwd, options);
   await client.initialize();
   return client;
 }
@@ -58,12 +61,14 @@ class AppServerClient implements CodexClient {
   private readonly turnWaiters = new Map<string, TurnWaiter>();
   private readonly stderrLines: string[] = [];
   private readonly cwd: string;
+  private readonly options: CodexClientOptions;
   private nextId = 1;
   private stdoutBuffer = "";
   private closed = false;
 
-  constructor(cwd: string) {
+  constructor(cwd: string, options: CodexClientOptions) {
     this.cwd = cwd;
+    this.options = options;
     this.child = spawn("codex", ["app-server", "--listen", "stdio://"], {
       cwd,
       stdio: ["pipe", "pipe", "pipe"],
@@ -100,7 +105,7 @@ class AppServerClient implements CodexClient {
 
   async createThread(): Promise<CodexThread> {
     const response = await this.request<ThreadResponse>("thread/start", {
-      model: DEFAULT_MODEL,
+      ...this.formatModelParam(),
       cwd: this.cwd,
       approvalPolicy: "never",
       sandbox: "workspace-write",
@@ -117,7 +122,7 @@ class AppServerClient implements CodexClient {
     const response = await this.request<ThreadResponse>("thread/resume", {
       threadId,
       path: threadPath ?? undefined,
-      model: DEFAULT_MODEL,
+      ...this.formatModelParam(),
       cwd: this.cwd,
       approvalPolicy: "never",
       sandbox: "workspace-write",
@@ -136,7 +141,7 @@ class AppServerClient implements CodexClient {
   async startTurn(threadId: string, message: string): Promise<CodexTurnResult> {
     const response = await this.request<TurnStartResponse>("turn/start", {
       threadId,
-      effort: DEFAULT_REASONING_EFFORT,
+      effort: this.options.reasoningEffort,
       input: [
         {
           type: "text",
@@ -160,6 +165,10 @@ class AppServerClient implements CodexClient {
 
       this.turnWaiters.set(turnId, { resolve, reject, timeout });
     });
+  }
+
+  private formatModelParam(): { model?: string } {
+    return this.options.model ? { model: this.options.model } : {};
   }
 
   async initialize(): Promise<void> {

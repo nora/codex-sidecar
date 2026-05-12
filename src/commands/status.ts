@@ -1,4 +1,4 @@
-import { DEFAULT_MODEL, DEFAULT_REASONING_EFFORT } from "../codex/defaults.js";
+import { DEFAULT_MODEL_LABEL } from "../codex/defaults.js";
 import { formatStateRecoveryMessage, isInvalidStateFileError } from "./errors.js";
 import { readState } from "../codex/state.js";
 import type { CommandContext } from "../codex/types.js";
@@ -7,7 +7,13 @@ export async function runStatusCommand(context: CommandContext): Promise<void> {
   try {
     const state = await readState(context.stateFilePath);
     if (!state) {
-      context.stdout(formatStoppedStatus(context.stateFilePath));
+      context.stdout(
+        formatStoppedStatus(
+          context.stateFilePath,
+          context.codexOptions.model,
+          context.codexOptions.reasoningEffort,
+        ),
+      );
       return;
     }
 
@@ -20,8 +26,8 @@ export async function runStatusCommand(context: CommandContext): Promise<void> {
         `Started at: ${state.startedAt}`,
         `Updated at: ${state.updatedAt}`,
         `State file: ${context.stateFilePath}`,
-        `Default model: ${DEFAULT_MODEL}`,
-        `Default reasoning effort: ${DEFAULT_REASONING_EFFORT}`,
+        `Model: ${formatModelLabel(context.codexOptions.model)}`,
+        `Reasoning effort: ${context.codexOptions.reasoningEffort}`,
       ].join("\n"),
     );
   } catch (error) {
@@ -34,18 +40,26 @@ export async function runStatusCommand(context: CommandContext): Promise<void> {
         "Sidecar session: invalid-state",
         `State file: ${context.stateFilePath}`,
         formatStateRecoveryMessage(error),
-        `Default model: ${DEFAULT_MODEL}`,
-        `Default reasoning effort: ${DEFAULT_REASONING_EFFORT}`,
+        `Model: ${formatModelLabel(context.codexOptions.model)}`,
+        `Reasoning effort: ${context.codexOptions.reasoningEffort}`,
       ].join("\n"),
     );
   }
 }
 
-function formatStoppedStatus(stateFilePath: string): string {
+function formatStoppedStatus(
+  stateFilePath: string,
+  model: string | undefined,
+  effort: string,
+): string {
   return [
     "Sidecar session: stopped",
     `State file: ${stateFilePath}`,
-    `Default model: ${DEFAULT_MODEL}`,
-    `Default reasoning effort: ${DEFAULT_REASONING_EFFORT}`,
+    `Model: ${formatModelLabel(model)}`,
+    `Reasoning effort: ${effort}`,
   ].join("\n");
+}
+
+function formatModelLabel(model: string | undefined): string {
+  return model ?? DEFAULT_MODEL_LABEL;
 }

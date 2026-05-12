@@ -15,7 +15,7 @@ export async function runStopCommand(context: CommandContext): Promise<void> {
   }
 
   if (state.kind === "active") {
-    const client = await context.createClient(context.cwd);
+    const client = await context.createClient(context.cwd, context.codexOptions);
 
     try {
       try {

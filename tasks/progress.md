@@ -14,7 +14,7 @@
 - [x] `start / ask / reset / stop` を実装した
 - [x] `status` を実装した
 - [x] state file による thread 継続を実装した
-- [x] 既定値を `gpt-5.4` + `high` に固定した
+- [x] model は Codex CLI 既定値へ委譲し、reasoning effort は `high` を既定値にした
 - [x] 実 App Server で PoC を通した
 - [x] `pnpm qc` を通した
 - [x] resume / rollout 失敗時の復旧メッセージを最後まで整える
@@ -54,7 +54,7 @@
 ### Phase D: 配布品質を上げる
 
 - [ ] 同一 cwd で複数 thread を使い分ける named session を追加する
-- [ ] 設定ファイルか CLI option で model / effort を上書きできるようにする
+- [x] CLI option で model / effort を上書きできるようにする
 - [ ] `status --json` のような機械可読出力を検討する
 - [ ] エラー分類をもう少し体系化する
 - [ ] integration test の層を増やす

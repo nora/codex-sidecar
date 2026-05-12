@@ -14,7 +14,7 @@ export async function runResetCommand(context: CommandContext): Promise<void> {
     throw new Error("Sidecar session is not started. Run `codex-sidecar start`.");
   }
 
-  const client = await context.createClient(context.cwd);
+  const client = await context.createClient(context.cwd, context.codexOptions);
 
   try {
     if (existingState.kind === "active") {
